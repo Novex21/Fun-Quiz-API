@@ -50,18 +50,18 @@ const showQuestion = (question) => {
 
     questionText.innerHTML = question.question;
 
-    const answers = [...question.incorrect_answers, question.correct_answer.toString()];
+    const answers = [...question.incorrect_answers, question.correct_answer];
 
     answers.sort(()=> Math.random() - 0.5);
     answerWrapper.innerHTML = "";
     answers.forEach((answer) => {
         answerWrapper.innerHTML += `
         <div class="answer">
-                    <span class="text">${answer}</span>
-                    <span class="checkbox">
-                        <span class="icon"></span>
-                    </span>
-                </div>`;
+            <span class="text">${answer}</span>
+            <span class="checkbox">
+                <span class="icon"></span>
+            </span>
+        </div>`;
     });
 
     questionNumber.innerHTML = `Question <span class="current"> ${questions.indexOf(question) + 1}</span>/<span class="total">${questions.length}</span>`;
@@ -82,8 +82,6 @@ const showQuestion = (question) => {
                 });
                 answer.classList.add("selected");
             }
-
-            
 
             submitBtn.disabled = false;
         })
@@ -111,21 +109,22 @@ submitBtn.addEventListener("click", ()=> {
 const checkAnswer = () => {
     clearInterval(timer);
     const selectedAnswer = document.querySelector(".answer.selected");
+    
     if(selectedAnswer) {
-        const answer = selectedAnswer.querySelector(".text");
+        const answer = selectedAnswer.querySelector(".text").innerHTML;
         if(answer === questions[currentQuestion -1].correct_answer) {
             score++;
             selectedAnswer.classList.add("correct");
         } else {
-            selectedAnswer.classList.add("wrong");
-            const correctAnswer = document.querySelectorAll(".answer").forEach((answer) => {
+            document.querySelectorAll(".answer").forEach((answer) => {
                 if(answer.querySelector(".text").innerHTML === questions[currentQuestion -1].correct_answer) {
                     answer.classList.add("correct");
                 }
+            selectedAnswer.classList.add("wrong");
             });
         }
     }else {
-        const correctAnswer = document.querySelectorAll(".answer").forEach((answer) => {
+        document.querySelectorAll(".answer").forEach((answer) => {
             if(answer.querySelector(".text").innerHTML === questions[currentQuestion -1].correct_answer) {
                 answer.classList.add("correct");
             }
@@ -165,7 +164,7 @@ const showScore = () => {
     endScreen.classList.remove("hide");
     quiz.classList.add("hide");
     finalScore.innerHTML = score;
-    totalScore.innerHTML = `${questions.length}`;
+    totalScore.innerHTML = `/ ${questions.length} `;
 };
 
 const restartBtn = document.querySelector(".restart");
